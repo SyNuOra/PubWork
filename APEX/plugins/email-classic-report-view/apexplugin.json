@@ -1,0 +1,35 @@
+{
+  "name" : "Email Calssic Report View 1.0.0",
+  "version" : "1.0.0",
+  "description" : "It´s useful to guide your users through the application, or give your users a first run wizard to explain parts of your app.",
+  "keywords" : ["email", "Classic Report", "Report Filtered View"],
+  "homepage" : "https://github.com/SyNuOra/PubWork/plugins/email-classic-report-view",
+  "bugs" : {
+    "url" : "https://github.com/Dani3lSun/apex-plugin-guidedtour/issues",
+    "email" : "synu@gmx.com"
+  },
+  "license" : "MIT",
+  "commercial" : "No",
+  "author" : {
+    "name" : "Sydney Nurse",
+    "email" : "synu@gmx.com",
+    "url" : "https://synuora.hashnode.dev/",
+    "blueSky" : "@synuora.bsky.social",
+    "donationUrl" : "https://www.paypal.me/DanielHochleitnerIT/3"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/SyNuOra/PubWork.git"
+  },
+  "oracle" : {
+    "versions" : ["19.0.0.0.0","23.26.1.1.0"],
+    "apex" : {
+      "versions" : ["24.2.13"],
+      "plugin" : {
+        "internalName" : "SYNUORA.EMAIL_CLASSIC_REPORT",
+        "type" : "dynamic action",
+        "previewImage" : "https://raw.githubusercontent.com/SyNuOra/PubWork/plugins/email-classic-report-view/preview.png"
+      }
+    }
+  }
+}
