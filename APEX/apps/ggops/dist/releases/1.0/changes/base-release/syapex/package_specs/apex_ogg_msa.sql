@@ -1,8 +1,8 @@
 -- liquibase formatted sql
--- changeset SYAPEX:1771862258684 stripComments:false  logicalFilePath:base-release/syapex/package_specs/apex_ogg_msa.sql
--- sqlcl_snapshot src/database/syapex/package_specs/apex_ogg_msa.sql:null:692ca6dc365a2a0cbeed11160a3bdfa56a836688:create
+-- changeset SYAPEX:1771865126536 stripComments:false  logicalFilePath:base-release/syapex/package_specs/apex_ogg_msa.sql
+-- sqlcl_snapshot src/database/syapex/package_specs/apex_ogg_msa.sql:null:1720431ca7fade7065ce410015defc206d46500e:create
 
-create or replace package apex_ogg_msa -- =============================================
+create or replace package syapex.apex_ogg_msa -- =============================================
 -- Author:      Sydney Nurse@Oracle Switzerland
 -- Create date: Covid-19 Pandemic October 2021
 -- Description: Build to support the migration of Deployments between GoldenGate MSA Deployments

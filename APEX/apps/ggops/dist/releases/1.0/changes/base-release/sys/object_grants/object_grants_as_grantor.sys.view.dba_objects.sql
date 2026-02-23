@@ -1,6 +1,6 @@
 -- liquibase formatted sql
--- changeset SYS:1771862258973 stripComments:false  logicalFilePath:base-release/sys/object_grants/object_grants_as_grantor.sys.view.dba_objects.sql
--- sqlcl_snapshot src/database/sys/object_grants/object_grants_as_grantor.sys.view.dba_objects.sql:null:3f9cbb92adc6f4516cabec4ddcd4c233984bad0b:create
+-- changeset SYS:1771865128817 stripComments:false  logicalFilePath:base-release/sys/object_grants/object_grants_as_grantor.sys.view.dba_objects.sql
+-- sqlcl_snapshot src/database/sys/object_grants/object_grants_as_grantor.sys.view.dba_objects.sql:null:24c7ca4f86ab237fc7beeb797cbe81082bded4a3:create
 
-grant select on dba_objects to syapex;
+grant select on sys.dba_objects to syapex;
 

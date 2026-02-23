@@ -3,11 +3,49 @@
                    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
-<include file="syapex/object_grants/object_grants_as_grantor.syapex.package_spec.apex_cicdv2.sql" relativeToChangelogFile="true"/>
 <include file="sys/object_grants/object_grants_as_grantor.sys.directory.data_pump_dir.sql" relativeToChangelogFile="true"/>
 <include file="sys/object_grants/object_grants_as_grantor.sys.package_spec.dbms_crypto.sql" relativeToChangelogFile="true"/>
 <include file="sys/object_grants/object_grants_as_grantor.sys.package_spec.dbms_metadata.sql" relativeToChangelogFile="true"/>
 <include file="sys/object_grants/object_grants_as_grantor.sys.view.dba_objects.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_configuration_files.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_credentials.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_credential_domains.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_deployments.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_encryption_profiles.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_hosts.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_identity_domains.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_paths.sql" relativeToChangelogFile="true"/>
+<include file="syapex/tables/ggops_processes.sql" relativeToChangelogFile="true"/>
 <include file="syapex/package_specs/apex_ogg_msa.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_configuration_files_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_credentials_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_credential_domains_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_deployments_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_encryption_profiles_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_hosts_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_identity_domains_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_paths_biu.sql" relativeToChangelogFile="true"/>
+<include file="syapex/triggers/ggops_processes_biu.sql" relativeToChangelogFile="true"/>
 <include file="syapex/package_bodies/apex_ogg_msa.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_configuratio_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_credentials_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_credential_d_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_deployments_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_encryption_p_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_paths_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_paths_i2.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_paths_i3.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_processes_i1.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_processes_i2.sql" relativeToChangelogFile="true"/>
+<include file="syapex/indexes/ggops_processes_i3.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_configuration_files_process_id_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_credentia_deployment_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_credent_credential_do_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_encryptio_deployment_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_paths_process_id_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_paths_source_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_paths_target_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_processes_credential_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_processes_deployment_fk.sql" relativeToChangelogFile="true"/>
+<include file="syapex/ref_constraints/ggops_process_encryption_pr_fk.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>
