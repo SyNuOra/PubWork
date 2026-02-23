@@ -1,4 +1,4 @@
-create or replace package body apex_ogg_msa -- =============================================
+create or replace package body syapex.apex_ogg_msa -- =============================================
 -- Author:      Sydney Nurse@Oracle Switzerland
 -- Create date: Covid-19 Pandemic October 2021
 -- Description: Build to support the migration of Deployments between GoldenGate MSA Deployments
@@ -1416,4 +1416,4 @@ end;
 /
 
 
--- sqlcl_snapshot {"hash":"69b9569e2de3adaa81bb798f1ae3f3b35d2edb8c","type":"PACKAGE_BODY","name":"APEX_OGG_MSA","schemaName":"SYAPEX","sxml":""}
+-- sqlcl_snapshot {"hash":"04a5b42d122a85711abb2758b404e7c0b5708481","type":"PACKAGE_BODY","name":"APEX_OGG_MSA","schemaName":"SYAPEX","sxml":""}
