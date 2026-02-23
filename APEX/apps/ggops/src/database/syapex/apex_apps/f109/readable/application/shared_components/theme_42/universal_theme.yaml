@@ -1,0 +1,152 @@
+---
+# ====== Theme: Universal Theme ==============================
+id: 42
+identification: 
+  theme-number: 42
+  name: Universal Theme
+  identifier: UNIVERSAL_THEME
+  version: 1.6
+
+navigation: 
+  type: List
+  navigation-bar-type: List
+
+javascript: 
+  file-urls: 
+  - '#IMAGE_PREFIX#libraries/apex/#MIN_DIRECTORY#widget.stickyWidget#MIN#.js?v=#APEX_VERSION#'
+  - '#THEME_IMAGES#js/theme42#MIN#.js?v=#APEX_VERSION#'
+
+css: 
+  file-urls: 
+  - '#THEME_IMAGES#css/Core#MIN#.css?v=#APEX_VERSION#'
+
+component-defaults: 
+  current-theme-style: Vita - Slate
+  page: Standard
+  navigation-bar-list: Navigation Bar
+  navigation-menu-list-position: Side
+  navigation-menu-list-(top): Top Navigation Menu
+  navigation-menu-list-(side): Side Navigation Menu
+  login-page: Login
+  error-page: Login
+  printer-friendly-page: Standard
+  breadcrumb: Breadcrumb
+  button: Text
+  legacy-calendar: Calendar
+  default-label: Optional - Floating
+  optional-label: Optional - Floating
+  required-label: Required - Floating
+  list: Links List
+  region: Standard
+  classic-report: Standard
+
+region-defaults: 
+  breadcrumbs: Title Bar
+  charts: Standard
+  forms: Standard
+  lists: Standard
+  reports: Standard
+  wizards: Standard
+  interactive-reports: Interactive Report
+
+dialog-defaults: 
+  dialog-content-region: Blank with Attributes
+  dialog-button-region: Buttons Container
+  dialog-page: Modal Dialog
+
+icons: 
+  library: Font APEX
+
+files: 
+  file-prefix: '#IMAGE_PREFIX#themes/theme_42/1.6/'
+
+styles: 
+- # ====== Style: Vita - Red ===================================
+  id: 13128521532463200
+  identification: 
+    name: Vita - Red
+
+  settings: 
+    is-public: true
+    accessibility-tested: false
+
+  theme-roller-attributes: 
+    read-only: true
+    input-parameter-file-urls: '#THEME_IMAGES#less/theme/Vita-Red.less'
+    output-css-file-url: '#THEME_IMAGES#css/Vita-Red#MIN#.css?v=#APEX_VERSION#'
+
+- # ====== Style: Redwood Light ================================
+  id: 13128725694463200
+  identification: 
+    name: Redwood Light
+
+  settings: 
+    is-public: true
+    accessibility-tested: false
+
+  css: 
+    file-urls: 
+    - '#IMAGE_PREFIX#libraries/oracle-fonts/oraclesans-apex#MIN#.css?v=#APEX_VERSION#'
+    - '#THEME_IMAGES#css/Redwood-Light#MIN#.css?v=#APEX_VERSION#'
+
+  theme-roller-attributes: 
+    read-only: true
+
+- # ====== Style: Vita =========================================
+  id: 13128911372463200
+  identification: 
+    name: Vita
+
+  settings: 
+    is-public: true
+    accessibility-tested: true
+
+  theme-roller-attributes: 
+    read-only: true
+    input-parameter-file-urls: '#THEME_IMAGES#less/theme/Vita.less'
+    output-css-file-url: '#THEME_IMAGES#css/Vita#MIN#.css?v=#APEX_VERSION#'
+
+- # ====== Style: Vita - Slate =================================
+  id: 13129151659463200
+  identification: 
+    name: Vita - Slate
+
+  settings: 
+    is-public: true
+    accessibility-tested: false
+
+  theme-roller-attributes: 
+    read-only: true
+    input-parameter-file-urls: '#THEME_IMAGES#less/theme/Vita-Slate.less'
+    output-css-file-url: '#THEME_IMAGES#css/Vita-Slate#MIN#.css?v=#APEX_VERSION#'
+
+- # ====== Style: Vita - Dark ==================================
+  id: 13129375313463200
+  identification: 
+    name: Vita - Dark
+
+  settings: 
+    is-public: true
+    accessibility-tested: false
+
+  theme-roller-attributes: 
+    read-only: true
+    input-parameter-file-urls: '#THEME_IMAGES#less/theme/Vita-Dark.less'
+    output-css-file-url: '#THEME_IMAGES#css/Vita-Dark#MIN#.css?v=#APEX_VERSION#'
+
+- # ====== Style: Vista ========================================
+  id: 13129504903463200
+  identification: 
+    name: Vista
+
+  settings: 
+    is-public: false
+    accessibility-tested: false
+
+  css: 
+    file-urls: 
+    - '#THEME_IMAGES#css/Vista#MIN#.css?v=#APEX_VERSION#'
+
+  theme-roller-attributes: 
+    read-only: true
+

@@ -1,0 +1,206 @@
+---
+- # ====== List of Values: GGOPS_CREDENTIALS.GET_USERALIAS =====
+  id: 1408866313605152
+  identification: 
+    name: GGOPS_CREDENTIALS.GET_USERALIAS
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_CREDENTIALS
+
+  column-mapping: 
+    return: USER_ID
+    display: USER_ALIAS
+    default-sort: USER_ALIAS
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: TEST ================================
+  id: 9012770832175841
+  identification: 
+    name: TEST
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: select 'Bob' as  name,1 as num from dual
+
+  column-mapping: 
+    return: NUM
+    display: NAME
+    default-sort: NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: LOGIN_REMEMBER_USERNAME =============
+  id: 13164499111463381
+  identification: 
+    name: LOGIN_REMEMBER_USERNAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Static Values
+
+  entries: 
+  - # ====== Entry: Remember username ============================
+    id: 13164836313463383
+    entry: 
+      sequence: 10
+      display: Remember username
+      return: Y
+
+- # ====== List of Values: GGOPS_HOSTS.HOST_NAME ===============
+  id: 13216243127464150
+  identification: 
+    name: GGOPS_HOSTS.HOST_NAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_HOSTS
+
+  column-mapping: 
+    return: HOST_ID
+    display: HOST_NAME
+    default-sort: HOST_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: GGOPS_DEPLOYMENTS.DEPLOYMENT_NAME ===
+  id: 13235374248464316
+  identification: 
+    name: GGOPS_DEPLOYMENTS.DEPLOYMENT_NAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_DEPLOYMENTS
+
+  column-mapping: 
+    return: DEPLOYMENT_ID
+    display: DEPLOYMENT_NAME
+    default-sort: DEPLOYMENT_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: GGOPS_CREDENTIAL_DOMAINS.DOMAIN_NAME 
+  id: 13273169303464629
+  identification: 
+    name: GGOPS_CREDENTIAL_DOMAINS.DOMAIN_NAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_CREDENTIAL_DOMAINS
+
+  column-mapping: 
+    return: DOMAIN_ID
+    display: DOMAIN_NAME
+    default-sort: DOMAIN_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: GGOPS_CONFIGURATION_FILES.CONFIGURATI
+  id: 13313465246464938
+  identification: 
+    name: GGOPS_CONFIGURATION_FILES.CONFIGURATION
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_CONFIGURATION_FILES
+
+  column-mapping: 
+    return: CONFIG_ID
+    display: CONFIGURATION
+    default-sort: CONFIGURATION
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: GGOPS_ENCRYPTION_PROFILES.PROFILE_NAM
+  id: 13314359736464939
+  identification: 
+    name: GGOPS_ENCRYPTION_PROFILES.PROFILE_NAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_ENCRYPTION_PROFILES
+
+  column-mapping: 
+    return: PROFILE_ID
+    display: PROFILE_NAME
+    default-sort: PROFILE_NAME
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: GGOPS_CREDENTIALS.USERALIAS =========
+  id: 13314918311464939
+  identification: 
+    name: GGOPS_CREDENTIALS.USERALIAS
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 
+          GGOPS_CREDENTIALS.USER_ALIAS as USER_ALIAS,
+          GGOPS_CREDENTIALS.USER_ID as USER_ID
+       from GGOPS_CREDENTIAL_DOMAINS GGOPS_CREDENTIAL_DOMAINS,
+          GGOPS_CREDENTIALS GGOPS_CREDENTIALS 
+       where GGOPS_CREDENTIALS.CREDENTIAL_DOMAIN_ID=GGOPS_CREDENTIAL_DOMAINS.DOMAIN_ID
+       AND (GGOPS_CREDENTIAL_DOMAINS.DEPLOYMENT_ID = :P17_DEPLOYMENT_ID
+              OR GGOPS_CREDENTIAL_DOMAINS.DEPLOYMENT_ID = :P24_DEPLOYMENT_ID)
+
+  column-mapping: 
+    return: USER_ID
+    display: USER_ALIAS
+    default-sort: USER_ALIAS
+    sort-direction: Ascending (Nulls Last)
+
+- # ====== List of Values: GGOPS_PROCESSES.PROCESS_NAME ========
+  id: 13341201301465104
+  identification: 
+    name: GGOPS_PROCESSES.PROCESS_NAME
+
+  subscription: 
+    version-number: 1
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_PROCESSES
+
+  column-mapping: 
+    return: PROCESS_ID
+    display: PROCESS_NAME
+    default-sort: PROCESS_NAME
+    sort-direction: Ascending (Nulls Last)
+

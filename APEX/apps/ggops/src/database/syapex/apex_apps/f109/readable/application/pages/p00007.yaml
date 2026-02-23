@@ -1,0 +1,1540 @@
+---
+# ====== Page: Ggops Deployment ==============================
+id: 7
+identification: 
+  name: Ggops Deployment
+  alias: GGOPS-DEPLOYMENT
+  title: Ggops Deployment
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Supplemental Info ===========================
+  id: 1762119240115140
+  identification: 
+    name: Supplemental Info
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Ggops Deployment ============================
+  id: 13220196142464301
+  identification: 
+    name: Ggops Deployment
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select
+          DE.HOST_ID,
+          HO.HOST_NAME,
+          DE.DEPLOYMENT_ID,
+          DE.DEPLOYMENT_NAME,
+          DE.DEPLOYMENT_TITLE,
+          DE.DEPLOYMENT_LABEL,
+          DE.DEPLOYMENT_PLATFORM,
+          DE.DEPLOYMENT_OGGHOME,
+          DE.DEPLOYMENT_ETCHOME,
+          DE.DEPLOYMENT_CONFHOME,
+          DE.CREATED,
+          DE.CREATED_BY,
+          DE.UPDATED,
+          DE.UPDATED_BY
+        from GGOPS_DEPLOYMENTS DE, GGOPS_HOSTS HO
+        WHERE DE.HOST_ID = HO.HOST_ID
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 13226113973464305
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P7_HOST_NAME =============================
+  id: 1002988450011851
+  identification: 
+    name: P7_HOST_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: HOST_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_TABLESPEC =============================
+  id: 1762229023115141
+  identification: 
+    name: P7_TABLESPEC
+    type: Text Field
+
+  label: 
+    label: Tablespec
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Supplemental Info # 1762119240115140
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+  help: 
+    inline-help-text: |
+      Table Specification: schema.table
+      
+      Example: ggsource.*
+    help-text: |
+      Table Specification: schema.table
+      
+      Wild cards are supported for the table name
+      
+      Example: ggsource.*
+
+- # ====== Page Item: P7_TRANDATA ==============================
+  id: 1762369479115142
+  identification: 
+    name: P7_TRANDATA
+    type: Textarea
+
+  label: 
+    label: Trandata
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 40
+    region: Supplemental Info # 1762119240115140
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_CREDENTIAL_ID =========================
+  id: 1795205070037884
+  identification: 
+    name: P7_CREDENTIAL_ID
+    type: Select List
+
+  label: 
+    label: Credential Id
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Supplemental Info # 1762119240115140
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: SQL Query
+    sql-query: |
+      select GGOPS_CREDENTIALS.USER_ALIAS as USER_ALIAS,
+          GGOPS_CREDENTIALS.USER_ID as USER_ID 
+       from GGOPS_DEPLOYMENTS GGOPS_DEPLOYMENTS,
+          GGOPS_CREDENTIAL_DOMAINS GGOPS_CREDENTIAL_DOMAINS,
+          GGOPS_CREDENTIALS GGOPS_CREDENTIALS 
+       where GGOPS_CREDENTIALS.CREDENTIAL_DOMAIN_ID=GGOPS_CREDENTIAL_DOMAINS.DOMAIN_ID
+          and GGOPS_CREDENTIAL_DOMAINS.DEPLOYMENT_ID=GGOPS_DEPLOYMENTS.DEPLOYMENT_ID
+          and GGOPS_DEPLOYMENTS.DEPLOYMENT_ID=:P7_DEPLOYMENT_ID
+    display-extra-values: true
+    display-null-value: true
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P7_DEPLOYMENT_ID
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_TITLE ======================
+  id: 12243774224744941
+  identification: 
+    name: P7_DEPLOYMENT_TITLE
+    type: Text Field
+
+  label: 
+    label: Deployment Title
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_TITLE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_LABEL ======================
+  id: 12243822692744942
+  identification: 
+    name: P7_DEPLOYMENT_LABEL
+    type: Text Field
+
+  label: 
+    label: Release Build
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 60
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_LABEL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_PLATFORM ===================
+  id: 12243975209744943
+  identification: 
+    name: P7_DEPLOYMENT_PLATFORM
+    type: Text Field
+
+  label: 
+    label: Deployment Platform
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_PLATFORM
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_OGGHOME ====================
+  id: 12244087563744944
+  identification: 
+    name: P7_DEPLOYMENT_OGGHOME
+    type: Text Field
+
+  label: 
+    label: Deployment Ogghome
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 80
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_OGGHOME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_ETCHOME ====================
+  id: 12244122303744945
+  identification: 
+    name: P7_DEPLOYMENT_ETCHOME
+    type: Text Field
+
+  label: 
+    label: Deployment Etchome
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 90
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_ETCHOME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_CONFHOME ===================
+  id: 12244235868744946
+  identification: 
+    name: P7_DEPLOYMENT_CONFHOME
+    type: Text Field
+
+  label: 
+    label: Deployment Confhome
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 100
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_CONFHOME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_ID =========================
+  id: 13220455276464301
+  identification: 
+    name: P7_DEPLOYMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_ID
+    data-type: NUMBER
+    query-only: true
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_HOST_ID ===============================
+  id: 13220884199464302
+  identification: 
+    name: P7_HOST_ID
+    type: Select List
+
+  label: 
+    label: Host
+    alignment: Right
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: GGOPS_HOSTS.HOST_NAME # 13216243127464150
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: HOST_ID
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_DEPLOYMENT_NAME =======================
+  id: 13221237696464302
+  identification: 
+    name: P7_DEPLOYMENT_NAME
+    type: Text Field
+
+  label: 
+    label: Deployment Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+
+  validation: 
+    value-required: true
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: DEPLOYMENT_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_CREATED ===============================
+  id: 13221641576464302
+  identification: 
+    name: P7_CREATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: CREATED
+    data-type: TIMESTAMP WITH LOCAL TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_CREATED_BY ============================
+  id: 13222415170464303
+  identification: 
+    name: P7_CREATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 120
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_UPDATED ===============================
+  id: 13222816720464303
+  identification: 
+    name: P7_UPDATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 130
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: UPDATED
+    data-type: TIMESTAMP WITH LOCAL TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7_UPDATED_BY ============================
+  id: 13223696267464304
+  identification: 
+    name: P7_UPDATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 140
+    region: Ggops Deployment # 13220196142464301
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Ggops Deployment # 13220196142464301
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: GET =========================================
+  id: 1269840156047995
+  identification: 
+    button-name: GET
+    label: Get
+
+  layout: 
+    sequence: 10
+    region: Buttons # 13226113973464305
+    slot: CHANGE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    icon: fa-arrow-circle-down
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P7_DEPLOYMENT_ID
+
+- # ====== Button: View ========================================
+  id: 1762429267115143
+  identification: 
+    button-name: View
+    label: View
+
+  layout: 
+    sequence: 30
+    region: Supplemental Info # 1762119240115140
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Right
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: CANCEL ======================================
+  id: 13226531742464306
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 20
+    region: Buttons # 13226113973464305
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 13228117019464307
+  identification: 
+    button-name: DELETE
+    label: Delete
+
+  layout: 
+    sequence: 30
+    region: Buttons # 13226113973464305
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--danger
+    - t-Button--simple
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:apex.confirm(htmldb_delete_message,'DELETE');"
+    execute-validations: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P7_DEPLOYMENT_ID
+
+- # ====== Button: SAVE ========================================
+  id: 13228545049464307
+  identification: 
+    button-name: SAVE
+    label: Apply Changes
+
+  layout: 
+    sequence: 40
+    region: Buttons # 13226113973464305
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P7_DEPLOYMENT_ID
+
+- # ====== Button: CREATE ======================================
+  id: 13228954452464307
+  identification: 
+    button-name: CREATE
+    label: Create
+
+  layout: 
+    sequence: 50
+    region: Buttons # 13226113973464305
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P7_DEPLOYMENT_ID
+
+dynamic-actions: 
+- # ====== Dynamic Action: Get Deployments =====================
+  id: 1270069090053227
+  identification: 
+    name: Get Deployments
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: GET # 1269840156047995
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 1270463053053233
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        BEGIN
+        
+            --GET EXTRACTS
+            APEX_OGG_MSA.REPLICATION
+            (
+                l_vc_host => :P7_HOST_NAME,
+                l_vc_deployment => :P7_DEPLOYMENT_NAME,
+                l_vc_method => 'GET',
+                l_vc_service => 'adminsrvr',
+                l_vc_process_type => 'extracts',
+                l_vc_process => NULL
+            );
+        
+            --GET REPLICATS
+            APEX_OGG_MSA.REPLICATION
+            (
+                l_vc_host => :P7_HOST_NAME,
+                l_vc_deployment => :P7_DEPLOYMENT_NAME,
+                l_vc_method => 'GET',
+                l_vc_service => 'adminsrvr',
+                l_vc_process_type => 'replicats',
+                l_vc_process => NULL
+            );
+        
+            --GET DIST PATHS
+            APEX_OGG_MSA.REPLICATION
+            (
+                l_vc_host => :P7_HOST_NAME,
+                l_vc_deployment => :P7_DEPLOYMENT_NAME,
+                l_vc_method => 'GET',
+                l_vc_service => 'distsrvr',
+                l_vc_process_type => 'sources',
+                l_vc_process => NULL
+            );
+        
+            --GET RCVR PATHS
+            APEX_OGG_MSA.REPLICATION
+            (
+                l_vc_host => :P7_HOST_NAME,
+                l_vc_deployment => :P7_DEPLOYMENT_NAME,
+                l_vc_method => 'GET',
+                l_vc_service => 'recvsrvr',
+                l_vc_process_type => 'targets',
+                l_vc_process => NULL
+            );
+        
+        
+        END;
+      items-to-submit: 
+      - P7_HOST_NAME
+      - P7_DEPLOYMENT_NAME
+
+    execution: 
+      sequence: 10
+      event: Get Deployments # 1270069090053227
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Close Dialog ================================
+    id: 1761924676115138
+    identification: 
+      action: Close Dialog
+
+    execution: 
+      sequence: 20
+      event: Get Deployments # 1270069090053227
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Get Trandata ========================
+  id: 1762492331115144
+  identification: 
+    name: Get Trandata
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: View # 1762429267115143
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 1762623043115145
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            l_response clob;
+        BEGIN
+            dbms_lob.createtemporary(l_response, TRUE);
+            
+            APEX_OGG_MSA.TRANDATA
+            (
+                l_vc_host => :P7_HOST_NAME,
+                l_vc_deployment => :P7_DEPLOYMENT_NAME,
+                l_vc_credential_id => :P7_CREDENTIAL_ID,
+                l_vc_tableSpec => :P7_TABLESPEC,
+                l_curr_trandata => :P7_TRANDATA
+            );
+        
+        END;
+      items-to-submit: 
+      - P7_HOST_NAME
+      - P7_DEPLOYMENT_NAME
+      - P7_TABLESPEC
+      - P7_CREDENTIAL_ID
+      items-to-return: 
+      - P7_TRANDATA
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Get Trandata # 1762492331115144
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 1762762264115146
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P7_TRANDATA
+
+    execution: 
+      sequence: 20
+      event: Get Trandata # 1762492331115144
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 13226627600464306
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 13226531742464306
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 13227495229464306
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 13226627600464306
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: P7_CREATED must be timestamp ============
+  id: 13222151002464303
+  identification: 
+    name: P7_CREATED must be timestamp
+
+  execution: 
+    sequence: 30
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P7_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P7_CREATED # 13221641576464302
+
+- # ====== Validation: P7_UPDATED must be timestamp ============
+  id: 13223364622464303
+  identification: 
+    name: P7_UPDATED must be timestamp
+
+  execution: 
+    sequence: 50
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P7_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P7_UPDATED # 13222816720464303
+
+processes: 
+- # ====== Process: Initialize form Ggops Deployment ===========
+  id: 13229350814464307
+  identification: 
+    name: Initialize form Ggops Deployment
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Ggops Deployment # 13220196142464301
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Ggops Deployment ==============
+  id: 13229708156464308
+  identification: 
+    name: Process form Ggops Deployment
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Ggops Deployment # 13220196142464301
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 13230187703464308
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+

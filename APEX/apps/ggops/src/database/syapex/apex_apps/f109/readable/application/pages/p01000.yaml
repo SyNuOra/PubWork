@@ -1,0 +1,1204 @@
+---
+# ====== Page: Host Tree Details =============================
+id: 1000
+identification: 
+  name: Host Tree Details
+  alias: HOST-TREE-DETAILS
+  title: Host Tree Details
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  chained: false
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Source Deployments ==========================
+  id: 18953553662521899
+  identification: 
+    name: Source Deployments
+    type: Tree
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select case when connect_by_isleaf = 1 then 0
+                  when level = 1             then 1
+                  else                           -1
+             end as status, 
+             level,
+             RESOURCE_TYPE as label,
+             name as title, 
+             case when RESOURCE_TYPE = 'HOST' then 'fa-file-text-o'
+                  when RESOURCE_TYPE = 'DEPLOYMENT' then 'fa-minus-square-o'
+             else 'fa-caret-square-o-right'
+             end as icon, 
+             id as value, 
+             tip as tooltip, 
+             APEX_PAGE.GET_URL (p_page => page, p_items => pItems, p_values => pValues) as link,
+             selected
+      from (
+              select 
+                  to_char(HS.host_id) id, 
+                  to_char(null) parent_id, 
+                  HS.host_name name,
+                  'Host' tip,
+                  5 page, 'P5_HOST_ID' pItems, HS.host_id pValues,
+                  HS.HOST_ID RESOURCE_ID,
+                  'HOST' RESOURCE_TYPE,
+                  0 as selected
+                  from GGOPS_HOSTS HS
+              UNION ALL
+              select 
+                  DP.host_id || '_' || DP.deployment_id id, 
+                  to_char(DP.host_id) parent_id, 
+                  DP.DEPLOYMENT_NAME || ' deployment' name,
+                  DP.DEPLOYMENT_TITLE tip,
+                  7 page, 'P7_DEPLOYMENT_ID' pItems, DP.deployment_id pValues,
+                  DP.deployment_id RESOURCE_ID,
+                  'DEPLOYMENT' RESOURCE_TYPE,
+                  0 as selected
+                  from GGOPS_DEPLOYMENTS DP
+              UNION ALL
+              select 
+                  DP.host_id || '_' || DP.deployment_id || '_' || PS.PROCESS_ID id, 
+                  DP.host_id || '_' || DP.deployment_id parent_id, 
+                  PS.PROCESS_NAME || ' ' || PS.PROCESS_TYPE name,
+                  CF.CONFIGURATION tip,
+                  17 page, 'P17_Process_ID' pItems, PS.PROCESS_ID pValues, 
+                  PS.PROCESS_ID RESOURCE_ID,
+                  PS.PROCESS_TYPE RESOURCE_TYPE,
+                  0 as selected
+                  from GGOPS_DEPLOYMENTS DP, GGOPS_PROCESSES PS, GGOPS_CONFIGURATION_FILES CF
+                  where dp.deployment_id = PS.deployment_id
+                  AND CF.PROCESS_ID = PS.PROCESS_ID
+          )
+      start with parent_id is null
+      connect by parent_id = prior id
+      order siblings by name
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    static-id: sourceDeployTree
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      node-label-column: TITLE
+      node-value-column: VALUE
+      hierarchy: Not Computed
+      node-status-column: STATUS
+      hierarchy-level-column: LEVEL
+      tooltip: Database Column
+      tooltip-column: TOOLTIP
+      activate-node-link-with: Single Click
+      link-column: LINK
+      icon-css-class-column: ICON
+      default-icon-css-class: icon-tree-folder
+      icon-type-css-class: fa
+      selected-node-page-item: P1000_SELECTED_ID
+
+    performance: 
+      lazy-loading: true
+
+    advanced: 
+      initialization-javascript-function: |
+        function(options) {
+            options.multiple = true;
+            options.nodeSelector = true;
+            options.doubleClick = "toggle"; // optional
+            options.allowCopy= true;
+            options.dragAndDrop = true;
+            options.dragMultiple = true;
+            options.dragCursor = "move";
+            options.dragOpacity = 0.6;
+            options.dragCursorAt = { left: 20, bottom: -20 };
+            options.scope = "sources";
+            options.makeNodeAdapter = function( pStaticData, types, pHasIdentity) {
+                return  $.apex.treeView.makeDefaultNodeAdapter( pStaticData, {}, pHasIdentity );
+            };
+        	return options;
+        }
+
+- # ====== Region: Host ========================================
+  id: 23125233046605194
+  identification: 
+    name: Host
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: GGOPS_HOSTS
+    include-rowid-column: false
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Buttons =====================================
+  id: 23131911439605199
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+page-items: 
+- # ====== Page Item: P1000_HOST_ID ============================
+  id: 703127768112123
+  identification: 
+    name: P1000_HOST_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Host # 23125233046605194
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: HOST_ID
+    data-type: NUMBER
+    query-only: true
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_HOST_NAME ==========================
+  id: 703556295112125
+  identification: 
+    name: P1000_HOST_NAME
+    type: Text Field
+
+  label: 
+    label: Host Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 20
+    region: Host # 23125233046605194
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+
+  validation: 
+    value-required: true
+    maximum-length: 1000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: HOST_NAME
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_HOST_ADDRESS =======================
+  id: 703958163112125
+  identification: 
+    name: P1000_HOST_ADDRESS
+    type: Text Field
+
+  label: 
+    label: Host Address
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Host # 23125233046605194
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+
+  validation: 
+    value-required: true
+    maximum-length: 4000
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: HOST_ADDRESS
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_HOST_CREDENTIAL ====================
+  id: 704357804112125
+  identification: 
+    name: P1000_HOST_CREDENTIAL
+    type: Text Field
+
+  label: 
+    label: Host Credential
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Host # 23125233046605194
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 60
+
+  validation: 
+    value-required: true
+    maximum-length: 256
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: HOST_CREDENTIAL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_CREATED ============================
+  id: 704765620112126
+  identification: 
+    name: P1000_CREATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 50
+    region: Host # 23125233046605194
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: CREATED
+    data-type: TIMESTAMP WITH LOCAL TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_CREATED_BY =========================
+  id: 705128931112126
+  identification: 
+    name: P1000_CREATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Host # 23125233046605194
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: CREATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_UPDATED ============================
+  id: 705571302112126
+  identification: 
+    name: P1000_UPDATED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: Host # 23125233046605194
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: UPDATED
+    data-type: TIMESTAMP WITH LOCAL TIME ZONE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_UPDATED_BY =========================
+  id: 705921811112127
+  identification: 
+    name: P1000_UPDATED_BY
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Host # 23125233046605194
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Host # 23125233046605194
+    column: UPDATED_BY
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_ADMINNAME ==========================
+  id: 706332142112127
+  identification: 
+    name: P1000_ADMINNAME
+    type: Text Field
+
+  label: 
+    label: Admin
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 90
+    region: Host # 23125233046605194
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_ADMINPASS ==========================
+  id: 706736112112127
+  identification: 
+    name: P1000_ADMINPASS
+    type: Password
+
+  label: 
+    label: Password
+    alignment: Left
+
+  settings: 
+    submit-when-enter-pressed: true
+
+  layout: 
+    sequence: 100
+    region: Host # 23125233046605194
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_SELECTED ===========================
+  id: 717365101116963
+  identification: 
+    name: P1000_SELECTED
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Source Deployments # 18953553662521899
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_RESOURCE_ID ========================
+  id: 717771743116963
+  identification: 
+    name: P1000_RESOURCE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Source Deployments # 18953553662521899
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1000_SELECTED_ID ========================
+  id: 718124908116964
+  identification: 
+    name: P1000_SELECTED_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Source Deployments # 18953553662521899
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: GET =========================================
+  id: 710632737112133
+  identification: 
+    button-name: GET
+    label: Get
+
+  layout: 
+    sequence: 40
+    region: Buttons # 23131911439605199
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: CANCEL ======================================
+  id: 711003183112134
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 23131911439605199
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: DELETE ======================================
+  id: 711433629112134
+  identification: 
+    button-name: DELETE
+    label: Delete
+
+  layout: 
+    sequence: 20
+    region: Buttons # 23131911439605199
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--danger
+    - t-Button--simple
+
+  behavior: 
+    action: Redirect to URL
+    target: "javascript:apex.confirm(htmldb_delete_message,'DELETE');"
+    execute-validations: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1000_HOST_ID
+
+- # ====== Button: SAVE ========================================
+  id: 711838428112135
+  identification: 
+    button-name: SAVE
+    label: Apply Changes
+
+  layout: 
+    sequence: 30
+    region: Buttons # 23131911439605199
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1000_HOST_ID
+
+- # ====== Button: CREATE ======================================
+  id: 712228819112135
+  identification: 
+    button-name: CREATE
+    label: Create
+
+  layout: 
+    sequence: 50
+    region: Buttons # 23131911439605199
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P1000_HOST_ID
+
+- # ====== Button: CONTRACT_ALL ================================
+  id: 716502959116962
+  identification: 
+    button-name: CONTRACT_ALL
+    label: Collapse All
+
+  layout: 
+    sequence: 10
+    region: Source Deployments # 18953553662521899
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: EXPAND_ALL ==================================
+  id: 716971664116962
+  identification: 
+    button-name: EXPAND_ALL
+    label: Expand All
+
+  layout: 
+    sequence: 10
+    region: Source Deployments # 18953553662521899
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+dynamic-actions: 
+- # ====== Dynamic Action: Get Deployments =====================
+  id: 714183755112142
+  identification: 
+    name: Get Deployments
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: GET # 710632737112133
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 714658440112144
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        BEGIN
+            APEX_OGG_MSA.DEPLOYMENTS(
+                l_vc_host => :P1000_HOST_NAME,
+                l_vc_method => 'LIST');
+        END;
+      items-to-submit: 
+      - P1000_HOST_NAME
+
+    execution: 
+      sequence: 10
+      event: Get Deployments # 714183755112142
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 715018363112144
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 711003183112134
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 715524133112145
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 715018363112144
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: P1000_CREATED must be timestamp =========
+  id: 712724094112141
+  identification: 
+    name: P1000_CREATED must be timestamp
+
+  execution: 
+    sequence: 40
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P1000_CREATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P1000_CREATED # 704765620112126
+
+- # ====== Validation: P1000_UPDATED must be timestamp =========
+  id: 713060707112141
+  identification: 
+    name: P1000_UPDATED must be timestamp
+
+  execution: 
+    sequence: 60
+
+  validation: 
+    type: Item is a valid timestamp
+    item: P1000_UPDATED
+    always-execute: false
+
+  error: 
+    error-message: '#LABEL# must be a valid timestamp.'
+    display-location: Inline with Field and in Notification
+    associated-item: P1000_UPDATED # 705571302112126
+
+processes: 
+- # ====== Process: Initialize form Ggops Host =================
+  id: 709537973112132
+  identification: 
+    name: Initialize form Ggops Host
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Host # 23125233046605194
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Ggops Host ====================
+  id: 709972221112132
+  identification: 
+    name: Process form Ggops Host
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Host # 23125233046605194
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: CREATE_CREDENTAILS =========================
+  id: 713363698112141
+  identification: 
+    name: CREATE_CREDENTAILS
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      BEGIN
+      
+          -- CREATE APEX Web Credential
+          CASE :REQUEST
+              WHEN 'CREATE' THEN 
+                  APEX_OGG_MSA.CREATE_CREDENTIAL
+                  (
+                      l_n_flow_id => APEX_APPLICATION.G_FLOW_ID,
+                      l_vc_credential => :P1000_HOST_CREDENTIAL,
+                      l_vc_user => :P1000_ADMINNAME,
+                      l_vc_password => :P1000_ADMINPASS 
+                  );
+              WHEN 'SAVE' THEN 
+                  APEX_OGG_MSA.UPDATE_CREDENTIAL
+                  (
+                      l_vc_credential => :P1000_HOST_CREDENTIAL,
+                      l_vc_user => :P1000_ADMINNAME,
+                      l_vc_password => :P1000_ADMINPASS 
+                  );
+              WHEN 'DELETE' then DBMS_OUTPUT.PUT_LINE('');
+          END CASE;
+      END;
+      
+
+  execution: 
+    sequence: 10
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Close Dialog ===============================
+  id: 713686746112142
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
