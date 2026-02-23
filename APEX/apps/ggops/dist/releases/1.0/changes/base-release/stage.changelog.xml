@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+<include file="syapex/object_grants/object_grants_as_grantor.syapex.package_spec.apex_cicdv2.sql" relativeToChangelogFile="true"/>
+<include file="sys/object_grants/object_grants_as_grantor.sys.directory.data_pump_dir.sql" relativeToChangelogFile="true"/>
+<include file="sys/object_grants/object_grants_as_grantor.sys.package_spec.dbms_crypto.sql" relativeToChangelogFile="true"/>
+<include file="sys/object_grants/object_grants_as_grantor.sys.package_spec.dbms_metadata.sql" relativeToChangelogFile="true"/>
+<include file="sys/object_grants/object_grants_as_grantor.sys.view.dba_objects.sql" relativeToChangelogFile="true"/>
+<include file="syapex/package_specs/apex_ogg_msa.sql" relativeToChangelogFile="true"/>
+<include file="syapex/package_bodies/apex_ogg_msa.sql" relativeToChangelogFile="true"/>
+</databaseChangeLog>

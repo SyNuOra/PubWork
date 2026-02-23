@@ -1,0 +1,1301 @@
+---
+# ====== Page: Confirm Process Details =======================
+id: 28
+identification: 
+  name: Confirm Process Details
+  alias: CONFIRM-PROCESS-DETAILS
+  title: Confirm Process Details
+
+appearance: 
+  page-mode: Modal Dialog
+  dialog-template: Wizard Modal Dialog
+  template-options: 
+  - '#DEFAULT#'
+
+dialog: 
+  height: 400
+  attributes: 
+  - "close: function() { customEvent('customDialogClose'"
+  - " {modalPageId: 'MODAL_CLOSE_FIXED'});}"
+  chained: true
+  resizable: false
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Wizard Progress =============================
+  id: 1358888145656337
+  identification: 
+    name: Wizard Progress
+    type: List
+
+  source: 
+    list: Wizard Progress List # 1348358051656310
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      list-template: Wizard Progress
+
+- # ====== Region: Confirm Process Details =====================
+  id: 1359019826656337
+  identification: 
+    name: Confirm Process Details
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: Buttons =====================================
+  id: 1359175020656337
+  identification: 
+    name: Buttons
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_03
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Buttons Container
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: Text (escape special characters)
+      show-line-breaks: true
+
+- # ====== Region: Confirm Process Configuration ===============
+  id: 1366005818663959
+  identification: 
+    name: Confirm Process Configuration
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Confirm Process Details # 1359019826656337
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P28_PROCESS_NAME =========================
+  id: 1360599407656338
+  identification: 
+    name: P28_PROCESS_NAME
+    type: Text Field
+
+  label: 
+    label: Name
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_PROCESS_ID ===========================
+  id: 1365134811663950
+  identification: 
+    name: P28_PROCESS_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_DEPLOYMENT_ID ========================
+  id: 1365252381663951
+  identification: 
+    name: P28_DEPLOYMENT_ID
+    type: Select List
+
+  label: 
+    label: Deployment
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: GGOPS_DEPLOYMENTS.DEPLOYMENT_NAME # 13235374248464316
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_CREDENTIAL_ID ========================
+  id: 1365346996663952
+  identification: 
+    name: P28_CREDENTIAL_ID
+    type: Select List
+
+  label: 
+    label: User Alias
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: GGOPS_CREDENTIALS.GET_USERALIAS # 1408866313605152
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_PROCESS_TYPE =========================
+  id: 1365404707663953
+  identification: 
+    name: P28_PROCESS_TYPE
+    type: Text Field
+
+  label: 
+    label: Type
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 70
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_PROCESS_TRAIL ========================
+  id: 1365526166663954
+  identification: 
+    name: P28_PROCESS_TRAIL
+    type: Text Field
+
+  label: 
+    label: Trail
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 80
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_PROCESS_TRAIL_SIZE ===================
+  id: 1365684614663955
+  identification: 
+    name: P28_PROCESS_TRAIL_SIZE
+    type: Text Field
+
+  label: 
+    label: Trail Size
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 90
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_PROCESS_BEGIN ========================
+  id: 1365742720663956
+  identification: 
+    name: P28_PROCESS_BEGIN
+    type: Text Field
+
+  label: 
+    label: Begin
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 100
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_PROCESS_INTENT =======================
+  id: 1365866227663957
+  identification: 
+    name: P28_PROCESS_INTENT
+    type: Text Field
+
+  label: 
+    label: Intent
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: None
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 110
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_ENCRYPTION_PROFILE ===================
+  id: 1365950384663958
+  identification: 
+    name: P28_ENCRYPTION_PROFILE
+    type: Number Field
+
+  label: 
+    label: Encryption Profile
+    alignment: Left
+
+  settings: 
+    number-alignment: End
+    virtual-keyboard: Text
+
+  layout: 
+    sequence: 120
+    region: Confirm Process Details # 1359019826656337
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_CONFIG_ID ============================
+  id: 1366314528663962
+  identification: 
+    name: P28_CONFIG_ID
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Confirm Process Configuration # 1366005818663959
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P28_CONFIGURATION ========================
+  id: 1366391155663963
+  identification: 
+    name: P28_CONFIGURATION
+    type: Textarea
+
+  label: 
+    label: Configuration
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: true
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 20
+    region: Confirm Process Configuration # 1366005818663959
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 5
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Item
+    item: P24_CONFIGURATION
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  read-only: 
+    type: Always
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Save_Done ===================================
+  id: 723092287395944
+  identification: 
+    button-name: Save_Done
+    label: Done
+
+  layout: 
+    sequence: 50
+    region: Buttons # 1359175020656337
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    css-classes: 
+    - u-color-8
+    icon: fa-arrow-circle-down
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: CANCEL ======================================
+  id: 1360916331656338
+  identification: 
+    button-name: CANCEL
+    label: Cancel
+
+  layout: 
+    sequence: 10
+    region: Buttons # 1359175020656337
+    slot: CLOSE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: Save_Migrate ================================
+  id: 1361029493656338
+  identification: 
+    button-name: Save_Migrate
+    label: Migrate
+
+  layout: 
+    sequence: 40
+    region: Buttons # 1359175020656337
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    css-classes: 
+    - u-color-7
+    icon: fa-arrow-circle-up
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: PREVIOUS ====================================
+  id: 1361130373656338
+  identification: 
+    button-name: PREVIOUS
+    label: Previous
+
+  layout: 
+    sequence: 20
+    region: Buttons # 1359175020656337
+    slot: PREVIOUS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-chevron-left
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Save Process ========================
+  id: 723280154395945
+  identification: 
+    name: Save Process
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Save_Done # 723092287395944
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 723306157395946
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            l_vc_service varchar2(40);
+        
+        BEGIN
+        
+            UPDATE GGOPS_PROCESSES 
+            SET 
+                PROCESS_NAME = :P28_PROCESS_NAME,
+                PROCESS_TRAIL = :P28_PROCESS_TRAIL,
+                PROCESS_TRAIL_SIZE = :P28_PROCESS_TRAIL_SIZE,
+                PROCESS_BEGIN = :P28_PROCESS_BEGIN,
+                PROCESS_INTENT = :P28_PROCESS_INTENT,
+                ENCRYPTION_PROFILE = :P28_ENCRYPTION_PROFILE,
+                CREDENTIAL_ID = :P28_CREDENTIAL_ID
+            WHERE PROCESS_ID = :P28_PROCESS_ID;
+                
+            UPDATE GGOPS_CONFIGURATION_FILES 
+            SET 
+                CONFIGURATION = :P28_CONFIGURATION
+            WHERE PROCESS_ID = :P28_PROCESS_ID;
+        
+            SELECT CASE PROCESS_TYPE
+                        WHEN 'source' THEN 'distsrvr'
+                        WHEN 'target' THEN 'recvsrvr'
+                        ELSE 'adminsrvr'
+                    END
+                    INTO l_vc_service
+                    FROM GGOPS_PROCESSES
+                    WHERE PROCESS_ID = :P28_PROCESS_ID;
+        
+        END;
+      items-to-submit: 
+      - P28_PROCESS_ID
+      - P28_PROCESS_NAME
+      - P28_PROCESS_TRAIL
+      - P28_PROCESS_TRAIL_SIZE
+      - P28_PROCESS_BEGIN
+      - P28_PROCESS_INTENT
+      - P28_ENCRYPTION_PROFILE
+      - P28_CREDENTIAL_ID
+      - P28_CONFIGURATION
+      items-to-return: 
+      - P28_PROCESS_ID
+      - P28_PROCESS_NAME
+      - P28_PROCESS_TRAIL
+      - P28_PROCESS_TRAIL_SIZE
+      - P28_PROCESS_BEGIN
+      - P28_PROCESS_INTENT
+      - P28_ENCRYPTION_PROFILE
+      - P28_CREDENTIAL_ID
+      - P28_CONFIGURATION
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Save Process # 723280154395945
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Close_1 =============================
+  id: 723402330395947
+  identification: 
+    name: Close_1
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Save_Done # 723092287395944
+
+  actions: 
+  - # ====== Action: Close Dialog ================================
+    id: 723532835395948
+    identification: 
+      action: Close Dialog
+
+    execution: 
+      sequence: 10
+      event: Close_1 # 723402330395947
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Cancel Dialog =======================
+  id: 1361300234656338
+  identification: 
+    name: Cancel Dialog
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CANCEL # 1360916331656338
+
+  actions: 
+  - # ====== Action: Cancel Dialog ===============================
+    id: 1362109101656339
+    identification: 
+      action: Cancel Dialog
+
+    execution: 
+      sequence: 10
+      event: Cancel Dialog # 1361300234656338
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Update Process ======================
+  id: 1366584812663964
+  identification: 
+    name: Update Process
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Save_Migrate # 1361029493656338
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 1366599073663965
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        DECLARE
+            l_vc_service varchar2(40);
+        
+        BEGIN
+        
+            UPDATE GGOPS_PROCESSES 
+            SET 
+                PROCESS_NAME = :P28_PROCESS_NAME,
+                PROCESS_TRAIL = :P28_PROCESS_TRAIL,
+                PROCESS_TRAIL_SIZE = :P28_PROCESS_TRAIL_SIZE,
+                PROCESS_BEGIN = :P28_PROCESS_BEGIN,
+                PROCESS_INTENT = :P28_PROCESS_INTENT,
+                ENCRYPTION_PROFILE = :P28_ENCRYPTION_PROFILE,
+                CREDENTIAL_ID = :P28_CREDENTIAL_ID
+            WHERE PROCESS_ID = :P28_PROCESS_ID;
+                
+            UPDATE GGOPS_CONFIGURATION_FILES 
+            SET 
+                CONFIGURATION = :P28_CONFIGURATION
+            WHERE PROCESS_ID = :P28_PROCESS_ID;
+        
+            SELECT CASE PROCESS_TYPE
+                        WHEN 'source' THEN 'distsrvr'
+                        WHEN 'target' THEN 'recvsrvr'
+                        ELSE 'adminsrvr'
+                    END
+                    INTO l_vc_service
+                    FROM GGOPS_PROCESSES
+                    WHERE PROCESS_ID = :P28_PROCESS_ID;
+        
+            APEX_OGG_MSA.MIGRATE(
+                l_n_process_id => :P28_PROCESS_ID,
+                l_vc_service => l_vc_service
+            );
+        END;
+      items-to-submit: 
+      - P28_PROCESS_ID
+      - P28_PROCESS_NAME
+      - P28_PROCESS_TRAIL
+      - P28_PROCESS_TRAIL_SIZE
+      - P28_PROCESS_BEGIN
+      - P28_PROCESS_INTENT
+      - P28_ENCRYPTION_PROFILE
+      - P28_CREDENTIAL_ID
+      - P28_CONFIGURATION
+      items-to-return: 
+      - P28_PROCESS_ID
+      - P28_PROCESS_NAME
+      - P28_PROCESS_TRAIL
+      - P28_PROCESS_TRAIL_SIZE
+      - P28_PROCESS_BEGIN
+      - P28_PROCESS_INTENT
+      - P28_ENCRYPTION_PROFILE
+      - P28_CREDENTIAL_ID
+      - P28_CONFIGURATION
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Update Process # 1366584812663964
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Close ===============================
+  id: 1415645349296980
+  identification: 
+    name: Close
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Save_Migrate # 1361029493656338
+
+  actions: 
+  - # ====== Action: Close Dialog ================================
+    id: 1415774441296981
+    identification: 
+      action: Close Dialog
+
+    execution: 
+      sequence: 10
+      event: Close # 1415645349296980
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Close Dialog ===============================
+  id: 1363626229656340
+  identification: 
+    name: Close Dialog
+    type: Close Dialog
+    execution-chain: None
+
+  settings: 
+    show-success-messages: false
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+branches: 
+- # ====== Branch: Go To Page 30 ===============================
+  id: 723626511395949
+  identification: 
+    name: Go To Page 30
+
+  execution: 
+    sequence: 30
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:30:&SESSION.::&DEBUG.:RP,30:P30_RESOURCE_ID_1:&P28_PROCESS_ID.&success_msg=#SUCCESS_MSG#'
+      page: 30 # Test Param Compare
+      clear-cache: RP,30
+      values: 
+        p30_resource_id_1: '&P28_PROCESS_ID.'
+
+  server-side-condition: 
+    when-button-pressed: Save_Done # 723092287395944
+
+- # ====== Branch: Go To Page 24 ===============================
+  id: 1362825166656339
+  identification: 
+    name: Go To Page 24
+
+  execution: 
+    sequence: 10
+    point: Validating
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:24:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 24 # Update Process Details
+
+  server-side-condition: 
+    when-button-pressed: PREVIOUS # 1361130373656338
+
+- # ====== Branch: Go To Page 30 ===============================
+  id: 1415946211296983
+  identification: 
+    name: Go To Page 30
+
+  execution: 
+    sequence: 20
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:30:&SESSION.::&DEBUG.:RP,30:P30_RESOURCE_ID_1:&P28_PROCESS_ID.&success_msg=#SUCCESS_MSG#'
+      page: 30 # Test Param Compare
+      clear-cache: RP,30
+      values: 
+        p30_resource_id_1: '&P28_PROCESS_ID.'
+
+  server-side-condition: 
+    when-button-pressed: Save_Migrate # 1361029493656338
+

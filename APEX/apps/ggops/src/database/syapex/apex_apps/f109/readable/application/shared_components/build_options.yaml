@@ -1,0 +1,17 @@
+---
+- # ====== Build Option: Feature: About Page ===================
+  id: 13151593128463298
+  identification: 
+    name: 'Feature: About Page'
+
+  status: 
+    status: Include
+    default-on-export: Same as Current Status
+    on-upgrade-keep-status: false
+
+  comments: 
+    comments: About this application page.
+
+  subscription: 
+    version-number: 1
+

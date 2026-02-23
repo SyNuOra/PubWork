@@ -1,0 +1,1944 @@
+---
+# ====== Page: Test Param Compare ============================
+id: 30
+identification: 
+  name: Test Param Compare
+  alias: TEST-PARAM-COMPARE
+  title: Test Param Compare
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: |
+    function traverse( n ) {
+    
+        var i;
+    
+        if ( n.children ) {
+    
+            for ( i = 0; i < n.children.length; i++ ) {
+    
+                traverse( n.children[i] );
+    
+            }
+    
+        } else {
+    
+            // could get specific about which nodes are allowed to have children
+    
+            // here assume they all can
+    
+            n.children = [];
+    
+        }
+    
+    }
+    
+    function customEvent(event, data){
+        apex.event.trigger(document, event, data);
+    }
+    
+    function highlight(newElem, oldElem){ 
+      newElem.html(newElem.text().split('').map(function(val, i){
+        return val != oldElem.text().charAt(i) ?
+          "<span class='highlight'>"+val+"</span>" : 
+          val;            
+      }).join('')); 
+    }
+    
+    
+    function copyNode(parent, nodes, places, callback ) {
+        // here is where you can call the server to persist the copy
+        console.log("nodes copied", parent, nodes, places);
+        const targetArray = (parent.id).split("_");
+        let target_host_id = targetArray[0];
+        let target_deployment_id = targetArray[1];
+    
+        let source_host_id;
+        let source_deployment_id;
+        let source_process_id;
+    
+        parent.children.forEach (function(child){
+            console.log(child);
+            if ((child.id).split("_")[0] === target_host_id) {
+                const sourceArray = (child.id).split("_");
+                source_host_id = sourceArray[0];
+                source_deployment_id = sourceArray[1];
+                source_process_id = sourceArray[2];
+            };
+        });
+        console.log("Source items - host_id: ", source_host_id, " deployment_id: ", source_deployment_id, " process_id: ", source_process_id);
+        console.log("Target items - host_id: ", target_host_id, " deployment_id: ", target_deployment_id, " process_id: NEW");
+        
+        apex.server.process(
+            'Copy Nodes',
+            {
+            x01: source_process_id,
+            x02: target_deployment_id
+            },
+            {
+            success: function(pData){
+                    apex.region("targetDeployTree").refresh();
+                    console.log(pData);
+                    let sProcLink = pData;
+                    
+                    console.log(sProcLink);
+                    
+                    apex.navigation.dialog(sProcLink
+                        ,{title:'Update Process Details',height:'auto',width:'720',maxWidth:'960',modal:true,dialog:null}
+                        ,'t-Dialog-page--standard '+'',apex.jQuery('#targetDeployTree'));
+                    
+            },
+            dataType: 'text'
+            }
+        );
+    
+        callback( true );
+    };
+
+css: 
+  inline: '.highlight {background-color: #B4D5FF}'
+
+security: 
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Unrestricted
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Comparison ==================================
+  id: 36563878465038
+  identification: 
+    name: Comparison
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  advanced: 
+    static-id: COMPARISON
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Target Deployments ==========================
+  id: 10241250327151769
+  identification: 
+    name: Target Deployments
+    type: Tree
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select case when connect_by_isleaf = 1 then 0
+                  when level = 1             then 1
+                  else                           -1
+             end as status, 
+             level, 
+             RESOURCE_ID as label,
+             DEPLOYMENT as DEPLOYMENT,
+             name as title, 
+             case when RESOURCE_TYPE = 'HOST' then 'fa-file-text-o'
+                  when RESOURCE_TYPE = 'DEPLOYMENT' then 'fa-minus-square-o'
+             else 'fa-caret-square-o-right'
+             end as icon, 
+             id as value, 
+             tip as tooltip, 
+             APEX_PAGE.GET_URL (p_page => page, p_items => pItems, p_values => pValues) as link,
+             selected
+      from (
+              select 
+                  to_char(HS.host_id) id, 
+                  to_char(null) parent_id, 
+                  HS.host_name name,
+                  'Host' tip,
+                  5 page, 'P5_HOST_ID' pItems, HS.host_id pValues,
+                  HS.HOST_ID RESOURCE_ID,
+                  'HOST' RESOURCE_TYPE,
+                  NULL DEPLOYMENT,
+                  0 as selected
+                  from GGOPS_HOSTS HS
+              UNION ALL
+              select 
+                  DP.host_id || '_' || DP.deployment_id id, 
+                  to_char(DP.host_id) parent_id, 
+                  DP.DEPLOYMENT_NAME || ' deployment' name,
+                  DP.DEPLOYMENT_TITLE tip,
+                  7 page, 'P7_DEPLOYMENT_ID' pItems, DP.deployment_id pValues,
+                  DP.deployment_id RESOURCE_ID,
+                  'DEPLOYMENT' RESOURCE_TYPE,
+                  DP.deployment_id DEPLOYMENT,
+                  0 as selected
+                  from GGOPS_DEPLOYMENTS DP
+              UNION ALL
+              select 
+                  DP.host_id || '_' || DP.deployment_id || '_' || PS.PROCESS_ID id, 
+                  DP.host_id || '_' || DP.deployment_id parent_id, 
+                  PS.PROCESS_NAME || ' ' || PS.PROCESS_TYPE name,
+                  CF.CONFIGURATION tip,
+                  17 page, 'P17_Process_ID' pItems, PS.PROCESS_ID pValues, 
+                  PS.PROCESS_ID RESOURCE_ID,
+                  PS.PROCESS_TYPE RESOURCE_TYPE,
+                  DP.deployment_id DEPLOYMENT,
+                  0 as selected
+                  from GGOPS_DEPLOYMENTS DP, GGOPS_PROCESSES PS, GGOPS_CONFIGURATION_FILES CF
+                  where dp.deployment_id = PS.deployment_id --(+)
+                  AND PS.PROCESS_ID = CF.PROCESS_ID --(+)
+          )
+      start with parent_id is null
+      connect by parent_id = prior id
+      order siblings by name
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    static-id: targetDeployTree
+    custom-attributes: 
+    - null
+    - ondragover='handleDragover(event)'
+    - null
+    - null
+    - ondrop='handleDrop(event)'
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      node-label-column: TITLE
+      node-value-column: VALUE
+      hierarchy: Not Computed
+      node-status-column: STATUS
+      hierarchy-level-column: LEVEL
+      tooltip: Database Column
+      tooltip-column: TOOLTIP
+      activate-node-link-with: Single Click
+      link-column: LINK
+      icon-css-class-column: ICON
+      default-icon-css-class: icon-tree-folder
+      icon-type-css-class: fa
+
+    performance: 
+      lazy-loading: true
+
+    advanced: 
+      initialization-javascript-function: |
+        function(options) {
+        
+            function traverse( n ) {
+                if ( n.children ) {
+                    for ( let i = 0; i < n.children.length; i++ ) {
+                        traverse( n.children[i] );
+                    }
+                } else {
+                    n.children = [];
+                }
+            }
+        
+            options.multiple = true;
+            options.nodeSelector = true;
+            options.dragAndDrop = true;
+            //options.dragMultiple = true;
+            options.dragReorder = false;
+            options.doubleClick = "toggle";
+            options.dragCursor = "copy";
+            options.dragOpacity = 0.6;
+            options.dragCursorAt = { left: 20, bottom: -20 };
+            options.scope = "procs";
+                
+            options.makeNodeAdapter = function( data, types, hasIdentity) {
+                traverse(data);
+        
+                let myAdapter = $.apex.treeView.makeDefaultNodeAdapter( data, types, hasIdentity );
+        
+                myAdapter.types.default.operations = {
+                    canAdd: true, 
+                    canDrag: true,
+                    canDelete: true, 
+                    drag: { normal: "move", ctrl: "copy" } 
+                };
+        
+                myAdapter.validateMove = function( parent, nodes, places, callback ) {
+                    console.log("nodes moved", parent, nodes, places);
+                    const targetArray = (parent.id).split("_");
+                    let target_host_id = targetArray[0];
+                    let target_deployment_id = targetArray[1];
+        
+                    let source_host_id;
+                    let source_deployment_id;
+                    let source_process_id;
+        
+                    parent.children.forEach (function(child){
+                        console.log(child);
+                        if ((child.id).split("_")[1] != target_deployment_id) {
+                            const sourceArray = (child.id).split("_");
+                            source_host_id = sourceArray[0];
+                            source_deployment_id = sourceArray[1];
+                            source_process_id = sourceArray[2];
+                        };
+                    });
+                    
+                    console.log("Source items - host_id: ", source_host_id, " deployment_id: ", source_deployment_id, " process_id: ", source_process_id);
+                    console.log("Target items - host_id: ", target_host_id, " deployment_id: ", target_deployment_id, " process_id: NEW");
+                    
+                    apex.server.process(
+                        'Copy Nodes',
+                        {
+                        x01: source_process_id,
+                        x02: target_deployment_id
+                        },
+                        {
+                        success: function(pData){
+                                apex.region("targetDeployTree").refresh();
+                                console.log(pData);
+                                let sProcLink = pData;
+                                
+                                console.log(sProcLink);
+                                
+                                apex.navigation.dialog(sProcLink
+                                    ,{title:'Update Process Details',height:'auto',width:'720',maxWidth:'960',modal:true,dialog:null}
+                                    ,'t-Dialog-page--standard '+'',apex.jQuery('#targetDeployTree'));
+                                
+                        },
+                        dataType: 'text'
+                        }
+                    );
+        
+                    callback( true );
+                };
+        
+                myAdapter.validateCopy = function( parent, nodes, places, callback ) {
+                    copyNode( parent, nodes, places, callback );
+        
+                    console.log("Copying Source items - host_id: ", source_host_id, " deployment_id: ", source_deployment_id, " process_id: ", source_process_id);
+                    
+                    
+                    callback( true );
+                };
+                return myAdapter;
+            };
+        	return options;
+        }
+        
+
+- # ====== Region: Source Deployments ==========================
+  id: 18921652672943663
+  identification: 
+    name: Source Deployments
+    type: Tree
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select case when connect_by_isleaf = 1 then 0
+                  when level = 1             then 1
+                  else                           -1
+             end as status, 
+             level, 
+             RESOURCE_ID as label,
+             DEPLOYMENT as DEPLOYMENT,
+             name as title, 
+             case when RESOURCE_TYPE = 'HOST' then 'fa-file-text-o'
+                  when RESOURCE_TYPE = 'DEPLOYMENT' then 'fa-minus-square-o'
+             else 'fa-caret-square-o-right'
+             end as icon, 
+             id as value, 
+             tip as tooltip, 
+             APEX_PAGE.GET_URL (p_page => page, p_items => pItems, p_values => pValues) as link,
+             selected
+      from (
+              select 
+                  to_char(HS.host_id) id, 
+                  to_char(null) parent_id, 
+                  HS.host_name name,
+                  'Host' tip,
+                  5 page, 'P5_HOST_ID' pItems, HS.host_id pValues,
+                  HS.HOST_ID RESOURCE_ID,
+                  'HOST' RESOURCE_TYPE,
+                  NULL DEPLOYMENT,
+                  0 as selected
+                  from GGOPS_HOSTS HS
+              UNION ALL
+              select 
+                  DP.host_id || '_' || DP.deployment_id id, 
+                  to_char(DP.host_id) parent_id, 
+                  DP.DEPLOYMENT_NAME || ' deployment' name,
+                  DP.DEPLOYMENT_TITLE tip,
+                  7 page, 'P7_DEPLOYMENT_ID' pItems, DP.deployment_id pValues,
+                  DP.deployment_id RESOURCE_ID,
+                  'DEPLOYMENT' RESOURCE_TYPE,
+                  DP.deployment_id DEPLOYMENT,
+                  0 as selected
+                  from GGOPS_DEPLOYMENTS DP
+              UNION ALL
+              select 
+                  DP.host_id || '_' || DP.deployment_id || '_' || PS.PROCESS_ID id, 
+                  DP.host_id || '_' || DP.deployment_id parent_id, 
+                  PS.PROCESS_NAME || ' ' || PS.PROCESS_TYPE name,
+                  CF.CONFIGURATION tip,
+                  22 page, 'P22_PROCESS_ID' pItems, PS.PROCESS_ID pValues, 
+                  PS.PROCESS_ID RESOURCE_ID,
+                  PS.PROCESS_TYPE RESOURCE_TYPE,
+                  DP.deployment_id DEPLOYMENT,
+                  0 as selected
+                  from GGOPS_DEPLOYMENTS DP, GGOPS_PROCESSES PS, GGOPS_CONFIGURATION_FILES CF
+                  where dp.deployment_id = PS.deployment_id --(+)
+                  AND PS.PROCESS_ID = CF.PROCESS_ID --(+)
+          )
+      start with parent_id is null
+      connect by parent_id = prior id
+      order siblings by name
+
+  layout: 
+    sequence: 30
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  advanced: 
+    static-id: sourceDeployTree
+    custom-attributes: 
+    - null
+    - ondragover='handleDragover(event)'
+    - null
+    - null
+    - ondrop='handleDrop(event)'
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Never
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      node-label-column: TITLE
+      node-value-column: VALUE
+      hierarchy: Not Computed
+      node-status-column: STATUS
+      hierarchy-level-column: LEVEL
+      tooltip: Database Column
+      tooltip-column: TOOLTIP
+      activate-node-link-with: Single Click
+      link-column: LINK
+      icon-css-class-column: ICON
+      default-icon-css-class: icon-tree-folder
+      icon-type-css-class: fa
+
+    performance: 
+      lazy-loading: true
+
+    advanced: 
+      initialization-javascript-function: |
+        function(options) {
+        
+            function traverse( n ) {
+                if ( n.children ) {
+                    for ( let i = 0; i < n.children.length; i++ ) {
+                        traverse( n.children[i] );
+                    }
+                } else {
+                    n.children = [];
+                }
+            }
+        
+            options.multiple = true;
+            options.nodeSelector = true;
+            options.dragAndDrop = true;
+            //options.dragMultiple = true;
+            options.dragReorder = false;
+            options.doubleClick = "toggle";
+            options.dragCursor = "move";
+            options.dragOpacity = 0.6;
+            options.dragCursorAt = { left: 20, bottom: -20 };
+            options.scope = "procs";
+                
+            options.makeNodeAdapter = function( data, types, hasIdentity) {
+                traverse(data);
+        
+                let myAdapter = $.apex.treeView.makeDefaultNodeAdapter( data, types, hasIdentity );
+        
+                myAdapter.types.default.operations = {
+                    canAdd: true, 
+                    canDrag: true,
+                    canDelete: true, 
+                    drag: { normal: "move", ctrl: "copy" } 
+                };
+        
+                // These are undocumented methods of the default node adapter.
+                // You have to read the code to see how these work
+                myAdapter.validateMove = function( parent, nodes, places, callback ) {
+                    // here is where you can call the server to persist the move
+                    console.log("nodes moved", parent, nodes, places);
+                    const targetArray = (parent.id).split("_");
+                    let target_host_id = targetArray[0];
+                    let target_deployment_id = targetArray[1];
+        
+                    const sourceArray = (parent.children[parent.children.length -1].id).split("_");
+                    let source_host_id = sourceArray[0];
+                    let source_deployment_id = sourceArray[1];
+                    let source_process_id = sourceArray[2];
+        
+                    console.log("Source items - host_id: ", source_host_id, " deployment_id: ", source_deployment_id, " process_id: ", source_process_id);
+                    console.log("Target items - host_id: ", target_host_id, " deployment_id: ", target_deployment_id, " process_id: NEW");
+                    
+                    apex.server.process(
+                        'Copy Nodes',
+                        {
+                        x01: source_process_id,
+                        x02: target_deployment_id
+                        },
+                        {
+                        success: function(){
+                                apex.region("sourceDeployTree").refresh();
+                                
+                        },
+                        dataType: 'text'
+                        }
+                    );
+        
+                    callback( true );
+                };
+        
+                myAdapter.validateCopy = function(parent, nodes, places, callback ) {
+                    // here is where you can call the server to persist the copy
+                    console.log("nodes copied", parent, nodes, places);callback( true );
+                };
+                return myAdapter;
+            };
+        
+            //options.beforeStop = function(event,ui) { console.log('beforeStop:',ui); }; // so far not needed
+            //options.stop = function(event,ui) { console.log('stop:',ui); }; 
+            /*
+            options.moved = function(event,ui) { 
+                };
+                */
+        	return options;
+        }
+        
+
+page-items: 
+- # ====== Page Item: P30_SOURCE_CONFIG ========================
+  id: 36498395465037
+  identification: 
+    name: P30_SOURCE_CONFIG
+    type: Textarea
+
+  label: 
+    label: Source Configuration
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: true
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 10
+    region: Comparison # 36563878465038
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 20
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_TARGET_CONFIG ========================
+  id: 36354898465036
+  identification: 
+    name: P30_TARGET_CONFIG
+    type: Textarea
+
+  label: 
+    label: Target Configuration
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: true
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 20
+    region: Comparison # 36563878465038
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+    column-css-classes: 
+    - .highlight
+    - '{background-color:'
+    - '#B4D5FF}'
+
+  appearance: 
+    template: Optional - Floating
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 20
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_SOURCE_PROCESS_ID ====================
+  id: 36243703465035
+  identification: 
+    name: P30_SOURCE_PROCESS_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: Target Deployments # 10241250327151769
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_TARGET_PROCESS_ID ====================
+  id: 36125113465034
+  identification: 
+    name: P30_TARGET_PROCESS_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 50
+    region: Target Deployments # 10241250327151769
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_SELECTED =============================
+  id: 686004008538734
+  identification: 
+    name: P30_SELECTED
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Source Deployments # 18921652672943663
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_RESOURCE_ID ==========================
+  id: 686431521538734
+  identification: 
+    name: P30_RESOURCE_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: Source Deployments # 18921652672943663
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_DEPLOYMENT_ID ========================
+  id: 686869753538734
+  identification: 
+    name: P30_DEPLOYMENT_ID
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 60
+    region: Source Deployments # 18921652672943663
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_SELECTED_1 ===========================
+  id: 688743622538736
+  identification: 
+    name: P30_SELECTED_1
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Target Deployments # 10241250327151769
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_RESOURCE_ID_1 ========================
+  id: 689094368538737
+  identification: 
+    name: P30_RESOURCE_ID_1
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 30
+    region: Target Deployments # 10241250327151769
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P30_DEPLOYMENT_ID_1 ======================
+  id: 689516368538737
+  identification: 
+    name: P30_DEPLOYMENT_ID_1
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 60
+    region: Target Deployments # 10241250327151769
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: Compare =====================================
+  id: 35824487465031
+  identification: 
+    button-name: Compare
+    label: Compare
+
+  layout: 
+    sequence: 30
+    region: Target Deployments # 10241250327151769
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    icon: fa-columns
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: Complete ====================================
+  id: 34488896465017
+  identification: 
+    button-name: Complete
+    label: Complete
+
+  layout: 
+    sequence: 10
+    region: Comparison # 36563878465038
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+- # ====== Button: EXPAND_ALL ==================================
+  id: 684922438538732
+  identification: 
+    button-name: EXPAND_ALL
+    label: Expand All
+
+  layout: 
+    sequence: 20
+    region: Source Deployments # 18921652672943663
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: source_expand
+
+- # ====== Button: CONTRACT_ALL ================================
+  id: 685188874538733
+  identification: 
+    button-name: CONTRACT_ALL
+    label: Collapse All
+
+  layout: 
+    sequence: 30
+    region: Source Deployments # 18921652672943663
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: source_collapse
+
+- # ====== Button: Register_1 ==================================
+  id: 685602376538733
+  identification: 
+    button-name: Register_1
+    label: Register Host
+
+  layout: 
+    sequence: 10
+    region: Source Deployments # 18921652672943663
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Right
+
+  appearance: 
+    button-template: Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-server-new
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:RR,5::'
+      page: 5 # Ggops Host
+      clear-cache: RR,5
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CONTRACT_ALL_1 ==============================
+  id: 687583433538736
+  identification: 
+    button-name: CONTRACT_ALL_1
+    label: Collapse All
+
+  layout: 
+    sequence: 20
+    region: Target Deployments # 10241250327151769
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    icon: fa-chevron-circle-down
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: target_collapse
+
+- # ====== Button: EXPAND_ALL_1 ================================
+  id: 687963204538736
+  identification: 
+    button-name: EXPAND_ALL_1
+    label: Expand All
+
+  layout: 
+    sequence: 10
+    region: Target Deployments # 10241250327151769
+    slot: NEXT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text with Icon
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--iconRight
+    icon: fa-chevron-circle-up
+
+  behavior: 
+    action: Defined by Dynamic Action
+    execute-validations: true
+
+  advanced: 
+    static-id: target_expand
+
+- # ====== Button: Register ====================================
+  id: 688372933538736
+  identification: 
+    button-name: Register
+    label: Register Host
+
+  layout: 
+    sequence: 10
+    region: Target Deployments # 10241250327151769
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    alignment: Right
+
+  appearance: 
+    button-template: Icon
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    icon: fa-server-new
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:5:&SESSION.::&DEBUG.:RR,5::'
+      page: 5 # Ggops Host
+      clear-cache: RR,5
+
+    warn-on-unsaved-changes: Do Not Check
+
+dynamic-actions: 
+- # ====== Dynamic Action: Target Process Set ==================
+  id: 36109180465033
+  identification: 
+    name: Target Process Set
+
+  execution: 
+    sequence: 120
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P30_TARGET_PROCESS_ID
+
+  actions: 
+  - # ====== Action: Refresh =====================================
+    id: 35916462465032
+    identification: 
+      action: Refresh
+
+    settings: 
+      maintain-pagination: false
+
+    affected-elements: 
+      selection-type: Region
+      region: Comparison # 36563878465038
+
+    execution: 
+      sequence: 10
+      event: Target Process Set # 36109180465033
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 722522392395938
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        try {
+            highlight($(apex.item("P30_SOURCE_CONFIG").getValue()), $(apex.item("P30_TARGET_CONFIG").getValue()));
+        }
+        catch(err){
+            console.log(err);
+        }
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P30_TARGET_CONFIG_HIGHLIGHTED
+
+    execution: 
+      sequence: 60
+      event: Target Process Set # 36109180465033
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 722619818395939
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P30_SOURCE_PROCESS_ID
+      - P30_TARGET_PROCESS_ID
+
+    execution: 
+      sequence: 70
+      event: Target Process Set # 36109180465033
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Refresh Show Comparison =============
+  id: 35742428465030
+  identification: 
+    name: Refresh Show Comparison
+
+  execution: 
+    sequence: 130
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Compare # 35824487465031
+
+  actions: 
+  - # ====== Action: Show ========================================
+    id: 35650361465029
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Region
+      region: Comparison # 36563878465038
+
+    execution: 
+      sequence: 10
+      event: Refresh Show Comparison # 35742428465030
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Hide ========================================
+    id: 34540980465018
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Button
+      button: Compare # 35824487465031
+
+    execution: 
+      sequence: 10
+      event: Refresh Show Comparison # 35742428465030
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Hide Comparison =====================
+  id: 35505893465027
+  identification: 
+    name: Hide Comparison
+
+  execution: 
+    sequence: 150
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 35355677465026
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: Comparison # 36563878465038
+
+    execution: 
+      sequence: 10
+      event: Hide Comparison # 35505893465027
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Show Compare ========================
+  id: 34378780465016
+  identification: 
+    name: Show Compare
+
+  execution: 
+    sequence: 140
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: Complete # 34488896465017
+
+  actions: 
+  - # ====== Action: Hide ========================================
+    id: 34297737465015
+    identification: 
+      action: Hide
+
+    affected-elements: 
+      selection-type: Region
+      region: Comparison # 36563878465038
+
+    execution: 
+      sequence: 20
+      event: Show Compare # 34378780465016
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Show ========================================
+    id: 34214550465014
+    identification: 
+      action: Show
+
+    affected-elements: 
+      selection-type: Button
+      button: Compare # 35824487465031
+
+    execution: 
+      sequence: 10
+      event: Show Compare # 34378780465016
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Event Selection Change ==============
+  id: 690295503538747
+  identification: 
+    name: Event Selection Change
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: NATIVE_JSTREE|REGION TYPE|treeviewselectionchange
+    selection-type: Region
+    region: Source Deployments # 18921652672943663
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 690814508538749
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var selNodes = apex.region("sourceDeployTree").call("getSelectedNodes");
+        $s("P30_SELECTED", selNodes.map(n=>n.id).join(":"));
+        $s("P30_RESOURCE_ID", selNodes.map(n=>n.RESOURCE_ID));
+        $s("P30_DEPLOYMENT_ID", selNodes.map(n=>n.id));
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P30_SELECTED
+      - P30_RESOURCE_ID
+
+    execution: 
+      sequence: 20
+      event: Event Selection Change # 690295503538747
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Update Page =========================
+  id: 691210772538749
+  identification: 
+    name: Update Page
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Dialog Closed
+    selection-type: JavaScript Expression
+    javascript-expression: window
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 691762552538750
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.submit('submit');
+
+    execution: 
+      sequence: 10
+      event: Update Page # 691210772538749
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Refresh Page on Custom Event ========
+  id: 692107287538750
+  identification: 
+    name: Refresh Page on Custom Event
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Custom
+    custom-event: customDialogClose
+    selection-type: JavaScript Expression
+    javascript-expression: document
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 692674137538750
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: apex.submit('submit');
+
+    execution: 
+      sequence: 10
+      event: Refresh Page on Custom Event # 692107287538750
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Event Selection Change_1 ============
+  id: 693081028538750
+  identification: 
+    name: Event Selection Change_1
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: NATIVE_JSTREE|REGION TYPE|treeviewselectionchange
+    selection-type: Region
+    region: Target Deployments # 10241250327151769
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 35181419465024
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: null;
+      items-to-submit: 
+      - P30_SOURCE_PROCESS_ID
+      - P30_TARGET_PROCESS_ID
+
+    execution: 
+      sequence: 20
+      event: Event Selection Change_1 # 693081028538750
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 35084291465023
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        select 
+            GGOPS_CONFIGURATION_FILES.CONFIGURATION as CONFIGURATION 
+         from GGOPS_CONFIGURATION_FILES GGOPS_CONFIGURATION_FILES
+         where GGOPS_CONFIGURATION_FILES.PROCESS_ID = :P30_SOURCE_PROCESS_ID
+         and rownum = 1;
+      items-to-submit: 
+      - P30_SOURCE_CONFIG
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P30_SOURCE_CONFIG
+
+    execution: 
+      sequence: 40
+      event: Event Selection Change_1 # 693081028538750
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Value ===================================
+    id: 34959584465022
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        select 
+            GGOPS_CONFIGURATION_FILES.CONFIGURATION as CONFIGURATION 
+         from GGOPS_CONFIGURATION_FILES GGOPS_CONFIGURATION_FILES
+         where GGOPS_CONFIGURATION_FILES.PROCESS_ID = :P30_TARGET_PROCESS_ID
+         and rownum = 1;
+      items-to-submit: 
+      - P30_TARGET_CONFIG
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P30_TARGET_CONFIG
+
+    execution: 
+      sequence: 50
+      event: Event Selection Change_1 # 693081028538750
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 693541897538751
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        var selNodes = apex.region("targetDeployTree").call("getSelectedNodes");
+        console.log(selNodes);
+        console.log(selNodes.length);
+        var currSel = selNodes[0];
+        console.log(currSel);
+        
+        const sourceArray = (currSel.id).split("_");
+                            source_host_id = sourceArray[0];
+                            source_deployment_id = sourceArray[1];
+                            source_process_id = sourceArray[2];
+        
+        if (selNodes.length > 1) {
+            var prevSel = selNodes[1];
+            console.log(prevSel);
+            const targetArray = (prevSel.id).split("_");
+            target_host_id = targetArray[0];
+            target_deployment_id = targetArray[1];
+            target_process_id = targetArray[2];
+            $s("P30_TARGET_PROCESS_ID", target_process_id);
+            apex.region("COMPARISON").refresh();
+            }
+        
+        $s("P30_SELECTED_1", selNodes.map(n=>n.id).join(":"));
+        
+        $s("P30_RESOURCE_ID_1", currSel.id);
+        $s("P30_SOURCE_PROCESS_ID", source_process_id);
+        $s("P30_DEPLOYMENT_ID_1", selNodes.map(n=>n._parent.id));
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P30_SELECTED_1
+      - P30_RESOURCE_ID_1
+      - P30_DEPLOYMENT_ID_1
+      - P30_SOURCE_PROCESS_ID
+      - P30_TARGET_PROCESS_ID
+
+    execution: 
+      sequence: 10
+      event: Event Selection Change_1 # 693081028538750
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: EXPAND_ALL ==========================
+  id: 693929164538751
+  identification: 
+    name: EXPAND_ALL
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: EXPAND_ALL # 684922438538732
+
+  actions: 
+  - # ====== Action: Expand Tree =================================
+    id: 694460050538752
+    identification: 
+      action: Expand Tree
+
+    affected-elements: 
+      selection-type: Region
+      region: Source Deployments # 18921652672943663
+
+    execution: 
+      sequence: 10
+      event: EXPAND_ALL # 693929164538751
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: CONTRACT_ALL_1 ======================
+  id: 694834720538752
+  identification: 
+    name: CONTRACT_ALL_1
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CONTRACT_ALL_1 # 687583433538736
+
+  actions: 
+  - # ====== Action: Collapse Tree ===============================
+    id: 695315125538753
+    identification: 
+      action: Collapse Tree
+
+    affected-elements: 
+      selection-type: Region
+      region: Target Deployments # 10241250327151769
+
+    execution: 
+      sequence: 10
+      event: CONTRACT_ALL_1 # 694834720538752
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: EXPAND_ALL_1 ========================
+  id: 695705832538753
+  identification: 
+    name: EXPAND_ALL_1
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: EXPAND_ALL_1 # 687963204538736
+
+  actions: 
+  - # ====== Action: Expand Tree =================================
+    id: 696252282538753
+    identification: 
+      action: Expand Tree
+
+    affected-elements: 
+      selection-type: Region
+      region: Target Deployments # 10241250327151769
+
+    execution: 
+      sequence: 10
+      event: EXPAND_ALL_1 # 695705832538753
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: CONTRACT_ALL ========================
+  id: 696636110538753
+  identification: 
+    name: CONTRACT_ALL
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: Button
+    button: CONTRACT_ALL # 685188874538733
+
+  actions: 
+  - # ====== Action: Collapse Tree ===============================
+    id: 697166628538754
+    identification: 
+      action: Collapse Tree
+
+    affected-elements: 
+      selection-type: Region
+      region: Source Deployments # 18921652672943663
+
+    execution: 
+      sequence: 10
+      event: CONTRACT_ALL # 696636110538753
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Expand ==============================
+  id: 697522926538754
+  identification: 
+    name: Expand
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Target Deployments # 10241250327151769
+
+  actions: 
+  - # ====== Action: Expand Tree =================================
+    id: 698047750538754
+    identification: 
+      action: Expand Tree
+
+    affected-elements: 
+      selection-type: Region
+      region: Target Deployments # 10241250327151769
+
+    execution: 
+      sequence: 10
+      event: Expand # 697522926538754
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Changed Value =======================
+  id: 722763278395940
+  identification: 
+    name: Changed Value
+
+  execution: 
+    sequence: 160
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P30_TARGET_CONFIG
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 722800914395941
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        highlight($("#P30_TARGET_CONFIG"), $("#P30_SOURCE_CONFIG"));
+        
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P30_TARGET_CONFIG
+
+    execution: 
+      sequence: 10
+      event: Changed Value # 722763278395940
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+processes: 
+- # ====== Process: Copy Nodes =================================
+  id: 689918116538737
+  identification: 
+    name: Copy Nodes
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      DECLARE
+          n_source_config_id GGOPS_CONFIGURATION_FILES.CONFIG_ID%TYPE;
+          n_target_process_id GGOPS_PROCESSES.PROCESS_ID%TYPE;
+          n_target_process_name GGOPS_PROCESSES.PROCESS_NAME%TYPE;
+          n_target_process_type GGOPS_PROCESSES.PROCESS_TYPE%TYPE;
+          n_target_process_trail GGOPS_PROCESSES.PROCESS_TRAIL%TYPE;
+          n_target_process_trail_size GGOPS_PROCESSES.PROCESS_TRAIL_SIZE%TYPE;
+          n_target_process_begin GGOPS_PROCESSES.PROCESS_BEGIN%TYPE;
+          n_target_process_intent GGOPS_PROCESSES.PROCESS_INTENT%TYPE;
+          n_target_encryption_profile GGOPS_PROCESSES.ENCRYPTION_PROFILE%TYPE;
+          n_target_credential_id GGOPS_PROCESSES.CREDENTIAL_ID%TYPE;
+          n_target_process_link varchar(4000);
+      
+      BEGIN
+      
+          SELECT config_id INTO n_source_config_id 
+              FROM GGOPS_CONFIGURATION_FILES
+              WHERE PROCESS_ID = apex_application.g_x01;
+      
+          SELECT --apex_application.g_x02,
+                  PROCESS_NAME,
+                  PROCESS_TYPE,
+                  PROCESS_TRAIL,
+                  PROCESS_TRAIL_SIZE,
+                  PROCESS_BEGIN,
+                  PROCESS_INTENT,
+                  ENCRYPTION_PROFILE,
+                  CREDENTIAL_ID
+              INTO n_target_process_name, n_target_process_type, n_target_process_trail,
+              n_target_process_trail_size, n_target_process_begin, n_target_process_intent,
+              n_target_encryption_profile, n_target_credential_id
+              FROM GGOPS_PROCESSES
+              WHERE PROCESS_ID = apex_application.g_x01;
+              
+          INSERT INTO GGOPS_PROCESSES (
+              DEPLOYMENT_ID,
+              PROCESS_NAME,
+              PROCESS_TYPE,
+              PROCESS_TRAIL,
+              PROCESS_TRAIL_SIZE,
+              PROCESS_BEGIN,
+              PROCESS_INTENT,
+              ENCRYPTION_PROFILE,
+              CREDENTIAL_ID
+              ) VALUES(
+                  apex_application.g_x02, n_target_process_name, n_target_process_type, n_target_process_trail,
+                  n_target_process_trail_size, n_target_process_begin, n_target_process_intent,
+                  n_target_encryption_profile, NULL
+              )
+              RETURNING PROCESS_ID INTO n_target_process_id;
+          
+          INSERT INTO GGOPS_CONFIGURATION_FILES (
+              PROCESS_ID, CONFIGURATION
+              )
+              SELECT n_target_process_id, CONFIGURATION
+                  FROM GGOPS_CONFIGURATION_FILES 
+                  WHERE PROCESS_ID = apex_application.g_x01;
+      
+          /*
+          select 
+              APEX_UTIL.PREPARE_URL(
+                  p_url => 'f?p=&APP_ID.:17:&APP_SESSION.::::P17_PROCESS_ID:' || n_target_process_id
+                  , p_checksum_type => 'SESSION'
+                  , p_plain_url => 1) as link 
+              into n_target_process_link from dual;
+           n_target_process_link := APEX_UTIL.PREPARE_URL(
+                  p_url => 'f?p=&APP_ID.:17:&APP_SESSION.::::P17_PROCESS_ID:1'
+                  , p_checksum_type => 'SESSION'
+                  , p_plain_url => false
+                  ); */
+          
+          n_target_process_link :=  
+              APEX_PAGE.GET_URL(
+                  p_page => 24
+                  , p_items => 'P24_PROCESS_ID'
+                  , p_values => n_target_process_id
+                  , p_plain_url => true);
+      
+          -- (p_page => 17, p_items => 'P17_PROCESS_ID', p_values => n_target_process_id) as link 
+      
+          -- htp.p(V('APP_ID') || ',' || V('APP_SESSION') || ',' || n_target_process_id);
+          htp.p(n_target_process_link);
+          -- apex_json.open_object;
+          -- apex_json.write('proc_id', n_target_process_id);
+          -- apex_json.write('success', true);
+          -- apex_json.write('message', 'Success!');
+          -- apex_json.close_object;
+      
+      END;
+
+  execution: 
+    sequence: 10
+    point: Ajax Callback
+    run-process: Once Per Page Visit (default)
+

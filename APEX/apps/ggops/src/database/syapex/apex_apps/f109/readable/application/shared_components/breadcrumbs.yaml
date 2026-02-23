@@ -1,0 +1,147 @@
+---
+- # ====== Breadcrumb: Breadcrumb ==============================
+  id: 13009207333463052
+  identification: 
+    name: Breadcrumb
+
+  entries: 
+  - # ====== Entry: Home =========================================
+    id: 13009456746463054
+    identification: 
+      name: Home
+      page-number: 1
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.'
+        page: 1 # Home
+
+  - # ====== Entry: Identity Domains =============================
+    id: 13177492881463444
+    identification: 
+      name: Identity Domains
+      page-number: 2
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:2:&APP_SESSION.::&DEBUG.:::'
+        page: 2 # Identity Domains
+
+  - # ====== Entry: Hosts ========================================
+    id: 13198754647463964
+    identification: 
+      name: Hosts
+      page-number: 4
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:4:&APP_SESSION.::&DEBUG.:::'
+        page: 4 # Hosts
+
+  - # ====== Entry: Deployments ==================================
+    id: 13218020872464153
+    identification: 
+      name: Deployments
+      page-number: 6
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:6:&APP_SESSION.::&DEBUG.:::'
+        page: 6 # Deployments
+
+  - # ====== Entry: Encryption Profiles ==========================
+    id: 13237160681464318
+    identification: 
+      name: Encryption Profiles
+      page-number: 8
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:8:&APP_SESSION.::&DEBUG.:::'
+        page: 8 # Encryption Profiles
+
+  - # ====== Entry: Credential Domains ===========================
+    id: 13256211775464476
+    identification: 
+      name: Credential Domains
+      page-number: 10
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:10:&APP_SESSION.::&DEBUG.:::'
+        page: 10 # Credential Domains
+
+  - # ====== Entry: Credentials ==================================
+    id: 13274957722464630
+    identification: 
+      name: Credentials
+      page-number: 12
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:12:&APP_SESSION.::&DEBUG.:::'
+        page: 12 # Credentials
+
+  - # ====== Entry: Configuration Files ==========================
+    id: 13293312749464782
+    identification: 
+      name: Configuration Files
+      page-number: 14
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:14:&APP_SESSION.::&DEBUG.:::'
+        page: 14 # Configuration Files
+
+  - # ====== Entry: Processes ====================================
+    id: 13316723987464941
+    identification: 
+      name: Processes
+      page-number: 16
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:16:&APP_SESSION.::&DEBUG.:::'
+        page: 16 # Processes
+
+  - # ====== Entry: Paths ========================================
+    id: 13343605815465106
+    identification: 
+      name: Paths
+      page-number: 18
+
+    execution: 
+      sequence: 10
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:18:&APP_SESSION.::&DEBUG.:::'
+        page: 18 # Paths
+
